@@ -7,39 +7,40 @@ const language = "en"
 let mButton = document.querySelector("#moreBtn")
 let gForm = document.querySelector("form")
 let gArea = document.querySelector(".gifArea")
-let sWordElement = document.getElementById("#sWord")
 let page = 0;
 let offset = 0;
 
-//Get results upon a submit event
-mButton.addEventListener("click", showMore)
-gForm.addEventListener("submit", handleFormSubmit)
-
-async function getResults(evt){
-    evt.preventDefault();
-    let apiURL = "https://api.giphy.com/v1/gifs/search?" + "api_key=" + aKey + "&q=" + evt.target.sWord.value.toLowerCase() + "&limit=" + limit + "&offset=" + offset + "&rating=" + rating + "&lang=" + language;
+async function getResults(word){
+    let apiURL = "https://api.giphy.com/v1/gifs/search?" + "api_key=" + aKey + "&q=" + word + "&limit=" + limit + "&offset=" + offset + "&rating=" + rating + "&lang=" + language;
     let response = await fetch(apiURL);
     let responseData = await response.json();
-    generateHTML(responseData);
+    return responseData;
 }
 
-function generateHTML(gifData){
+function generateHTML(gData){
     for(let i = 0; i < limit ; i++){
-        let gUrl = gifData.data[i].images.downsized_medium.url;
+        let gUrl = gData.data[i].images.downsized_medium.url;
         gArea.innerHTML += '<img src="'+gUrl+'"></img>'
     }
+}
+
+async function handleFormSubmit(evt){
+    evt.preventDefault();
+    gArea.innerHTML= "";
+    sWord = evt.target.sWord.value.toLowerCase();
+    const gifData = await getResults(sWord);
+    generateHTML(gifData);
+    evt.target.sWord.value = '';
     mButton.classList.remove("hidden");
 }
 
-function handleFormSubmit(evt){
-    gArea.innerHTML= "";
-    getResults(evt);
-    
-}
+gForm.addEventListener("submit", handleFormSubmit);
 
-function showMore(evt){
-    offset += (limit)-1;
+async function showMore(evt){
+    offset += limit;
     page++;
-    getResults(evt);
+    const gifData = await getResults(sWord);
+    generateHTML(gifData);
 }
 
+mButton.addEventListener("click", showMore);

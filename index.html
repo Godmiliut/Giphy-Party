@@ -16,7 +16,7 @@
     <div class = "navBar">
         <div class= "container">
             <div id="navBar">
-                <form action="app.js">
+                <form id="gifForm" action="app.js">
                     <label>Looking for something?</label>
                     <input type= "text" placeholder= "It can be anything" name="sWord" id="sWord" required></input>
                     <button id= "confirm">search</button>
@@ -30,7 +30,7 @@
     </div>
     <div class = "endBtn">
         <div class= "container">
-            <button id="moreBtn" class= "hidden">Load More</button>
+            <button id="moreBtn" class= "hidden" type="submit" form="gifForm">Load More</button>
         </div>
     </div>
     <script src="app.js"></script>
